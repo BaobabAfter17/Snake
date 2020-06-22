@@ -1,3 +1,22 @@
 h1 {
     text-align: center;
 }
+
+ul {
+    width: 640px;
+    display: flex;
+    border: 3px solid black;
+    list-style: none;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+ul li{
+    width: 40px;
+    height: 40px;
+    border: 1px solid gray
+}
+
+.snake-seg {
+    background-color: green;
+}

@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Snake = __webpack_require__(/*! ./snake */ \"./src/snake.js\");\n\nclass Board {\n    constructor() {\n        this.snake = new Snake();\n    }\n\n    turn(dir) {\n        this.snake.turn(dir);\n    }\n}\n\nmodule.exports = Board;\n\n//# sourceURL=webpack:///./src/board.js?");
+eval("const Snake = __webpack_require__(/*! ./snake */ \"./src/snake.js\");\n\nclass Board {\n    constructor() {\n        this.snake = new Snake();\n    }\n\n    turn(dir) {\n        this.snake.turn(dir);\n    }\n\n    step() {\n        this.snake.move();\n    }\n\n    snakePos() {\n        return this.snake.segments.map( coord => coord.toLiIndex() );\n    }\n\n}\n\nmodule.exports = Board;\n\n\n//# sourceURL=webpack:///./src/board.js?");
 
 /***/ }),
 
@@ -104,7 +104,7 @@ eval("const Snake = __webpack_require__(/*! ./snake */ \"./src/snake.js\");\n\nc
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("class Coord {\n    constructor(pos) {\n        this.pos = pos || [0, 0];\n    }\n\n    plus(pos) {\n        this.pos[0] += pos[0];\n        this.pos[1] += pos[1];\n    }\n\n    copy() {\n        return new Coord(this.pos.slice());\n    }\n}\n\nmodule.exports = Coord;\n\n\n//# sourceURL=webpack:///./src/coord.js?");
+eval("class Coord {\n    constructor(pos) {\n        this.pos = pos || [0, 0];\n    }\n\n    plus(pos) {\n        this.pos[0] += pos[0];\n        this.pos[1] += pos[1];\n    }\n\n    copy() {\n        return new Coord(this.pos.slice());\n    }\n\n    toLiIndex() {\n        return this.pos[0] + this.pos[1] * 15;\n    }\n}\n\nmodule.exports = Coord;\n\n//# sourceURL=webpack:///./src/coord.js?");
 
 /***/ }),
 
@@ -126,7 +126,7 @@ eval("const SnakeView = __webpack_require__(/*! ./snake-view */ \"./src/snake-vi
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Board = __webpack_require__(/*! ./board */ \"./src/board.js\");\n\nclass SnakeView {\n    constructor($el) {\n        this.$el = $el;\n        this.board = new Board();\n        this.bindEvents();\n        // setInterval(this.step, 500);\n\n    }\n\n    bindEvents() {\n        $(\"body\").on(\"keydown\", event => this.handleKeyEvent(event) );\n    }\n\n    handleKeyEvent(event) {\n        switch (event.keyCode) {\n            case 37: // left\n                this.board.turn(\"W\");\n                break;\n            case 38: // up\n                this.board.turn(\"N\");\n                break;\n            case 39: // right\n                this.board.turn(\"E\");\n                break;\n            case 40: // down\n                this.board.turn(\"S\");\n                break;\n        }\n    }\n}\n\nmodule.exports = SnakeView;\n\n//# sourceURL=webpack:///./src/snake-view.js?");
+eval("const Board = __webpack_require__(/*! ./board */ \"./src/board.js\");\n\nclass SnakeView {\n    constructor($el) {\n        this.$el = $el;\n        this.board = new Board();\n        this.setUpGrid();\n        this.bindEvents();\n        setInterval( () => {\n            this.step();\n        }, 500);\n    }\n\n    bindEvents() {\n        $(\"body\").on(\"keydown\", event => this.handleKeyEvent(event) );\n    }\n\n    handleKeyEvent(event) {\n        switch (event.keyCode) {\n            case 37: // left\n                this.board.turn(\"W\");\n                break;\n            case 38: // up\n                this.board.turn(\"N\");\n                break;\n            case 39: // right\n                this.board.turn(\"E\");\n                break;\n            case 40: // down\n                this.board.turn(\"S\");\n                break;\n        }\n    }\n\n    step() {\n        this.board.step();\n        this.render();\n    }\n\n    setUpGrid() {\n        let $ul = $(\"<ul>\");\n        for (let i = 0; i < 15; i++) {\n            for (let j = 0; j < 15; j++) {\n                let $li = $(\"<li>\");\n                $li.data(\"pos\", [i, j]);\n                $ul.append($li);\n            }\n        }\n        this.$el.append($ul);\n    }\n\n    render() {\n        const $allLis = $(\"li\");\n        $allLis.removeClass(\"snake-seg\");\n        this.board.snakePos().forEach( idx => {\n            let li = $allLis[idx];\n            let $li = $(li);\n            $li.addClass(\"snake-seg\");\n        })\n    }\n}\n\nmodule.exports = SnakeView;\n\n//# sourceURL=webpack:///./src/snake-view.js?");
 
 /***/ }),
 
@@ -137,7 +137,7 @@ eval("const Board = __webpack_require__(/*! ./board */ \"./src/board.js\");\n\nc
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Coord = __webpack_require__(/*! ./coord */ \"./src/coord.js\");\n\nclass Snake {\n    constructor() {\n        this.direction = \"N\";\n        let startCoord = new Coord([5,5]);\n        this.segments = [startCoord]; // should initially have one coord\n    }\n    \n    move() {\n        let newSeg = this.segments[0].copy();\n        switch (this.direction) {\n            case \"N\":\n                newSeg.plus([0, -1]);\n                break;\n            case \"E\":\n                newSeg.plus([1, 0]);\n                break;\n            case \"S\":\n                newSeg.plus([0, 1]);\n                break;\n            case \"W\":\n                newSeg.plus([-1, 0]);\n                break;\n        }\n        this.segments.pop();\n        this.segments.unshift(newSeg);\n    }\n\n    turn(direction) {\n        this.direction = direction;\n    }\n}\n\nmodule.exports = Snake;\n\n// test\n// const snake = new Snake();\n// snake.move();\n// snake.move();\n// console.log(snake.segments);\n\n\n//# sourceURL=webpack:///./src/snake.js?");
+eval("const Coord = __webpack_require__(/*! ./coord */ \"./src/coord.js\");\n\nclass Snake {\n    constructor() {\n        this.direction = \"N\";\n        let startCoord = new Coord([7,7]);\n        this.segments = [startCoord]; // should initially have one coord\n    }\n    \n    move() {\n        let newSeg = this.segments[0].copy();\n        switch (this.direction) {\n            case \"N\":\n                newSeg.plus([0, -1]);\n                break;\n            case \"E\":\n                newSeg.plus([1, 0]);\n                break;\n            case \"S\":\n                newSeg.plus([0, 1]);\n                break;\n            case \"W\":\n                newSeg.plus([-1, 0]);\n                break;\n        }\n        this.segments.pop();\n        this.segments.unshift(newSeg);\n    }\n\n    turn(direction) {\n        this.direction = direction;\n    }\n}\n\nmodule.exports = Snake;\n\n// test\n// const snake = new Snake();\n// snake.move();\n// snake.move();\n// console.log(snake.segments);\n\n\n//# sourceURL=webpack:///./src/snake.js?");
 
 /***/ })
 

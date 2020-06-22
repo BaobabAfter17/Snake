@@ -4,9 +4,11 @@ class SnakeView {
     constructor($el) {
         this.$el = $el;
         this.board = new Board();
+        this.setUpGrid();
         this.bindEvents();
-        // setInterval(this.step, 500);
-
+        setInterval( () => {
+            this.step();
+        }, 500);
     }
 
     bindEvents() {
@@ -28,6 +30,33 @@ class SnakeView {
                 this.board.turn("S");
                 break;
         }
+    }
+
+    step() {
+        this.board.step();
+        this.render();
+    }
+
+    setUpGrid() {
+        let $ul = $("<ul>");
+        for (let i = 0; i < 15; i++) {
+            for (let j = 0; j < 15; j++) {
+                let $li = $("<li>");
+                $li.data("pos", [i, j]);
+                $ul.append($li);
+            }
+        }
+        this.$el.append($ul);
+    }
+
+    render() {
+        const $allLis = $("li");
+        $allLis.removeClass("snake-seg");
+        this.board.snakePos().forEach( idx => {
+            let li = $allLis[idx];
+            let $li = $(li);
+            $li.addClass("snake-seg");
+        })
     }
 }
 

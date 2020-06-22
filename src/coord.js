@@ -11,6 +11,10 @@ class Coord {
     copy() {
         return new Coord(this.pos.slice());
     }
+
+    toLiIndex() {
+        return this.pos[0] + this.pos[1] * 15;
+    }
 }
 
 module.exports = Coord;

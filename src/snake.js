@@ -3,7 +3,7 @@ const Coord = require("./coord");
 class Snake {
     constructor() {
         this.direction = "N";
-        let startCoord = new Coord([5,5]);
+        let startCoord = new Coord([7,7]);
         this.segments = [startCoord]; // should initially have one coord
     }
     
