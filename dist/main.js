@@ -86,14 +86,58 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/board.js":
+/*!**********************!*\
+  !*** ./src/board.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Snake = __webpack_require__(/*! ./snake */ \"./src/snake.js\");\n\nclass Board {\n    constructor() {\n        this.snake = new Snake();\n    }\n\n    turn(dir) {\n        this.snake.turn(dir);\n    }\n}\n\nmodule.exports = Board;\n\n//# sourceURL=webpack:///./src/board.js?");
+
+/***/ }),
+
+/***/ "./src/coord.js":
+/*!**********************!*\
+  !*** ./src/coord.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("class Coord {\n    constructor(pos) {\n        this.pos = pos || [0, 0];\n    }\n\n    plus(pos) {\n        this.pos[0] += pos[0];\n        this.pos[1] += pos[1];\n    }\n\n    copy() {\n        return new Coord(this.pos.slice());\n    }\n}\n\nmodule.exports = Coord;\n\n\n//# sourceURL=webpack:///./src/coord.js?");
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-eval("console.log(\"Files are ready!\")\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("const SnakeView = __webpack_require__(/*! ./snake-view */ \"./src/snake-view.js\");\n\n$(() => {\n\n    const $snake = $(\".snake\");\n    const view = new SnakeView($snake);\n\n})\n\n//# sourceURL=webpack:///./src/index.js?");
+
+/***/ }),
+
+/***/ "./src/snake-view.js":
+/*!***************************!*\
+  !*** ./src/snake-view.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Board = __webpack_require__(/*! ./board */ \"./src/board.js\");\n\nclass SnakeView {\n    constructor($el) {\n        this.$el = $el;\n        this.board = new Board();\n        this.bindEvents();\n        // setInterval(this.step, 500);\n\n    }\n\n    bindEvents() {\n        $(\"body\").on(\"keydown\", event => this.handleKeyEvent(event) );\n    }\n\n    handleKeyEvent(event) {\n        switch (event.keyCode) {\n            case 37: // left\n                this.board.turn(\"W\");\n                break;\n            case 38: // up\n                this.board.turn(\"N\");\n                break;\n            case 39: // right\n                this.board.turn(\"E\");\n                break;\n            case 40: // down\n                this.board.turn(\"S\");\n                break;\n        }\n    }\n}\n\nmodule.exports = SnakeView;\n\n//# sourceURL=webpack:///./src/snake-view.js?");
+
+/***/ }),
+
+/***/ "./src/snake.js":
+/*!**********************!*\
+  !*** ./src/snake.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Coord = __webpack_require__(/*! ./coord */ \"./src/coord.js\");\n\nclass Snake {\n    constructor() {\n        this.direction = \"N\";\n        let startCoord = new Coord([5,5]);\n        this.segments = [startCoord]; // should initially have one coord\n    }\n    \n    move() {\n        let newSeg = this.segments[0].copy();\n        switch (this.direction) {\n            case \"N\":\n                newSeg.plus([0, -1]);\n                break;\n            case \"E\":\n                newSeg.plus([1, 0]);\n                break;\n            case \"S\":\n                newSeg.plus([0, 1]);\n                break;\n            case \"W\":\n                newSeg.plus([-1, 0]);\n                break;\n        }\n        this.segments.pop();\n        this.segments.unshift(newSeg);\n    }\n\n    turn(direction) {\n        this.direction = direction;\n    }\n}\n\nmodule.exports = Snake;\n\n// test\n// const snake = new Snake();\n// snake.move();\n// snake.move();\n// console.log(snake.segments);\n\n\n//# sourceURL=webpack:///./src/snake.js?");
 
 /***/ })
 
