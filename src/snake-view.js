@@ -6,9 +6,7 @@ class SnakeView {
         this.board = new Board();
         this.setUpGrid();
         this.bindEvents();
-        setInterval( () => {
-            this.step();
-        }, 500);
+        this.startInteval();
     }
 
     bindEvents() {
@@ -29,12 +27,35 @@ class SnakeView {
             case 40: // down
                 this.board.turn("S");
                 break;
+            case 32: // space
+                this.stopInteval();
+                break;
+            case 83: // S
+                this.startInteval();
+                break;
         }
+    }
+
+    stopInteval() {
+        if (this.intVar) {
+            clearInterval(this.intVar);
+        }
+    }
+
+    startInteval() {
+        this.intVar = setInterval(() => {
+            this.step();
+        }, 200);
     }
 
     step() {
         this.board.step();
         this.render();
+        if (this.board.lose()) {
+            alert("You lose");
+            clearInterval(this.intVar);
+            $("body").off("keydown");
+        }
     }
 
     setUpGrid() {
@@ -51,12 +72,21 @@ class SnakeView {
 
     render() {
         const $allLis = $("li");
+
+        //show snake
         $allLis.removeClass("snake-seg");
         this.board.snakePos().forEach( idx => {
             let li = $allLis[idx];
             let $li = $(li);
             $li.addClass("snake-seg");
         })
+
+        // show apple
+        const appleIdx = this.board.applePos();
+        $($allLis[appleIdx]).addClass("apple");
+
+        //show score
+        $(".score").text(this.board.score());
     }
 }
 

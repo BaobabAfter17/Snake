@@ -2,21 +2,36 @@ h1 {
     text-align: center;
 }
 
+label {
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 ul {
-    width: 640px;
+    width: 600px;
     display: flex;
     border: 3px solid black;
     list-style: none;
     flex-wrap: wrap;
     padding: 0;
+    margin: 0 auto;
+}
+
+p {
+    display: block;
+    text-align: center;
 }
 
 ul li{
     width: 40px;
     height: 40px;
-    border: 1px solid gray
 }
 
 .snake-seg {
     background-color: green;
+}
+
+.apple {
+    background-color: red;
 }
