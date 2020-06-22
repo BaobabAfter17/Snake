@@ -14,11 +14,3 @@ class Coord {
 }
 
 module.exports = Coord;
-
-//test
-
-// // let c1 = new Coord();
-// let c2 = new Coord([2,3]);
-// let c3 = c2.copy();
-// c2.pos[0] = 100;
-// console.log(c3.pos);

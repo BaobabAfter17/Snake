@@ -25,7 +25,10 @@ class Snake {
         }
         this.segments.pop();
         this.segments.unshift(newSeg);
+    }
 
+    turn(direction) {
+        this.direction = direction;
     }
 }
 
